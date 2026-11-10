@@ -108,7 +108,7 @@ An [EsaSim](https://esacode.com/) project of the workspace Gianluca De Novi's wo
 
 ### Blueprints in this repository
 
-- [1 · One prompt, several videos](blueprints/1-one-prompt-several-videos.json) · 4 blocks · version 1
+- [1 · One prompt, several videos](blueprints/1-one-prompt-several-videos.json) · 4 blocks · version 2
 - [2 · A list of prompts](blueprints/2-a-list-of-prompts.json) · 4 blocks
 - [3 · Small to large: the models](blueprints/3-small-to-large-the-models.json) · 10 blocks
 - [4 · Browse the kept videos](blueprints/4-browse-the-kept-videos.json) · 2 blocks
