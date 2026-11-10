@@ -1,0 +1,133 @@
+{
+    "esasim": {
+        "kind": "blueprint",
+        "flow_id": 27
+    },
+    "name": "1 · One prompt, several videos",
+    "description": "Wan 2.1 (1.3B) turns one prompt into 4 videos of 5 seconds (seeds 1 to 4), each streamed live and played whole as it is made; keep or remove them, then save the kept ones.",
+    "published_version": 1,
+    "updated": "2026-11-10 22:57:24",
+    "graph": {
+        "nodes": [
+            {
+                "id": "gen",
+                "type": "text-to-video",
+                "x": 0,
+                "y": 120,
+                "params": {
+                    "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
+                    "count": 4,
+                    "seconds": 0,
+                    "model": "Wan 2.1 · 1.3B · 480p (default, GPU 8 GB)",
+                    "model_id": "",
+                    "negative": "",
+                    "seed": 1,
+                    "steps": 0,
+                    "guidance": 0,
+                    "width": 0,
+                    "height": 0,
+                    "quality": "small (opens in the dashboard)",
+                    "stream": "whole videos",
+                    "accelerator": "auto",
+                    "token": ""
+                },
+                "title": "Text to video (Wan 2.1, 1.3B)"
+            },
+            {
+                "id": "review",
+                "type": "video-review",
+                "x": 520,
+                "y": 0,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "The videos: watch, keep, remove"
+            },
+            {
+                "id": "times",
+                "type": "chart",
+                "x": 520,
+                "y": 420,
+                "params": {
+                    "kind": "bars",
+                    "x": "n",
+                    "y": "made_in_s",
+                    "title": "Seconds to make each video (the first one includes the warm-up)"
+                },
+                "title": "Seconds per video"
+            },
+            {
+                "id": "table",
+                "type": "table-view",
+                "x": 520,
+                "y": 660,
+                "params": {
+                    "rows": 50
+                },
+                "title": "Prompts, seeds and times"
+            }
+        ],
+        "edges": [
+            {
+                "id": "gen.telemetry>review.videos",
+                "from": {
+                    "node": "gen",
+                    "port": "telemetry"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "gen.videos>review.videos",
+                "from": {
+                    "node": "gen",
+                    "port": "videos"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "gen.table>review.videos",
+                "from": {
+                    "node": "gen",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "gen.table>times.data",
+                "from": {
+                    "node": "gen",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "times",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "gen.table>table.data",
+                "from": {
+                    "node": "gen",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "table",
+                    "port": "data"
+                }
+            }
+        ],
+        "notes": [],
+        "dash": {
+            "items": []
+        }
+    }
+}
