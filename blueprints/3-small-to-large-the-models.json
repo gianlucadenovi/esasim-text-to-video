@@ -1,0 +1,403 @@
+{
+    "esasim": {
+        "kind": "blueprint",
+        "flow_id": 29
+    },
+    "name": "3 · Small to large: the models",
+    "description": "The same prompt and seeds on Wan 2.1 1.3B, LTX-Video 2B, Kandinsky 5.0 Video Lite 2B and Wan 2.2 TI2V 5B: their videos side by side, and the time each takes per video.",
+    "published_version": 0,
+    "updated": "2026-11-10 22:57:01",
+    "graph": {
+        "nodes": [
+            {
+                "id": "wan",
+                "type": "text-to-video",
+                "x": 0,
+                "y": 0,
+                "params": {
+                    "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
+                    "count": 2,
+                    "seconds": 0,
+                    "model": "Wan 2.1 · 1.3B · 480p (default, GPU 8 GB)",
+                    "model_id": "",
+                    "negative": "",
+                    "seed": 1,
+                    "steps": 0,
+                    "guidance": 0,
+                    "width": 0,
+                    "height": 0,
+                    "quality": "small (opens in the dashboard)",
+                    "stream": "whole videos",
+                    "accelerator": "auto",
+                    "token": ""
+                },
+                "title": "Wan 2.1 · 1.3B"
+            },
+            {
+                "id": "v_wan",
+                "type": "video-review",
+                "x": 560,
+                "y": 0,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "Wan 2.1 · 1.3B"
+            },
+            {
+                "id": "ltx",
+                "type": "text-to-video",
+                "x": 0,
+                "y": 300,
+                "params": {
+                    "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
+                    "count": 2,
+                    "seconds": 0,
+                    "model": "LTX-Video 0.9.5 · 2B · 768x512 (fastest, GPU 8 GB)",
+                    "model_id": "",
+                    "negative": "",
+                    "seed": 1,
+                    "steps": 0,
+                    "guidance": 0,
+                    "width": 0,
+                    "height": 0,
+                    "quality": "small (opens in the dashboard)",
+                    "stream": "whole videos",
+                    "accelerator": "auto",
+                    "token": ""
+                },
+                "title": "LTX-Video 0.9.5 · 2B"
+            },
+            {
+                "id": "v_ltx",
+                "type": "video-review",
+                "x": 560,
+                "y": 300,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "LTX-Video 0.9.5 · 2B"
+            },
+            {
+                "id": "kan",
+                "type": "text-to-video",
+                "x": 0,
+                "y": 600,
+                "params": {
+                    "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
+                    "count": 2,
+                    "seconds": 0,
+                    "model": "Kandinsky 5.0 Video Lite · 2B · 16 steps, 5 or 10 s (GPU 12 GB)",
+                    "model_id": "",
+                    "negative": "",
+                    "seed": 1,
+                    "steps": 0,
+                    "guidance": 0,
+                    "width": 0,
+                    "height": 0,
+                    "quality": "small (opens in the dashboard)",
+                    "stream": "whole videos",
+                    "accelerator": "auto",
+                    "token": ""
+                },
+                "title": "Kandinsky 5.0 Video Lite · 2B"
+            },
+            {
+                "id": "v_kan",
+                "type": "video-review",
+                "x": 560,
+                "y": 600,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "Kandinsky 5.0 Video Lite · 2B"
+            },
+            {
+                "id": "wan22",
+                "type": "text-to-video",
+                "x": 0,
+                "y": 900,
+                "params": {
+                    "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
+                    "count": 2,
+                    "seconds": 0,
+                    "model": "Wan 2.2 TI2V · 5B · 720p (GPU 24 GB)",
+                    "model_id": "",
+                    "negative": "",
+                    "seed": 1,
+                    "steps": 0,
+                    "guidance": 0,
+                    "width": 0,
+                    "height": 0,
+                    "quality": "small (opens in the dashboard)",
+                    "stream": "whole videos",
+                    "accelerator": "auto",
+                    "token": ""
+                },
+                "title": "Wan 2.2 TI2V · 5B (slow on 8 GB)"
+            },
+            {
+                "id": "v_wan22",
+                "type": "video-review",
+                "x": 560,
+                "y": 900,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "Wan 2.2 TI2V · 5B (slow on 8 GB)"
+            },
+            {
+                "id": "speed",
+                "type": "chart",
+                "x": 1060,
+                "y": 100,
+                "params": {
+                    "kind": "bars",
+                    "x": "model",
+                    "y": "seconds_per_video",
+                    "title": "Seconds per video (after the first), by model"
+                },
+                "title": "Seconds per video, by model"
+            },
+            {
+                "id": "cmp",
+                "type": "table-view",
+                "x": 1060,
+                "y": 400,
+                "params": {
+                    "rows": 50
+                },
+                "title": "The four models compared"
+            }
+        ],
+        "edges": [
+            {
+                "id": "wan.telemetry>v_wan.videos",
+                "from": {
+                    "node": "wan",
+                    "port": "telemetry"
+                },
+                "to": {
+                    "node": "v_wan",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "wan.videos>v_wan.videos",
+                "from": {
+                    "node": "wan",
+                    "port": "videos"
+                },
+                "to": {
+                    "node": "v_wan",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "wan.table>v_wan.videos",
+                "from": {
+                    "node": "wan",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "v_wan",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "wan.summary>speed.data",
+                "from": {
+                    "node": "wan",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "speed",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "wan.summary>cmp.data",
+                "from": {
+                    "node": "wan",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "cmp",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "ltx.telemetry>v_ltx.videos",
+                "from": {
+                    "node": "ltx",
+                    "port": "telemetry"
+                },
+                "to": {
+                    "node": "v_ltx",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "ltx.videos>v_ltx.videos",
+                "from": {
+                    "node": "ltx",
+                    "port": "videos"
+                },
+                "to": {
+                    "node": "v_ltx",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "ltx.table>v_ltx.videos",
+                "from": {
+                    "node": "ltx",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "v_ltx",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "ltx.summary>speed.data",
+                "from": {
+                    "node": "ltx",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "speed",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "ltx.summary>cmp.data",
+                "from": {
+                    "node": "ltx",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "cmp",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "kan.telemetry>v_kan.videos",
+                "from": {
+                    "node": "kan",
+                    "port": "telemetry"
+                },
+                "to": {
+                    "node": "v_kan",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "kan.videos>v_kan.videos",
+                "from": {
+                    "node": "kan",
+                    "port": "videos"
+                },
+                "to": {
+                    "node": "v_kan",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "kan.table>v_kan.videos",
+                "from": {
+                    "node": "kan",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "v_kan",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "kan.summary>speed.data",
+                "from": {
+                    "node": "kan",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "speed",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "kan.summary>cmp.data",
+                "from": {
+                    "node": "kan",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "cmp",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "wan22.telemetry>v_wan22.videos",
+                "from": {
+                    "node": "wan22",
+                    "port": "telemetry"
+                },
+                "to": {
+                    "node": "v_wan22",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "wan22.videos>v_wan22.videos",
+                "from": {
+                    "node": "wan22",
+                    "port": "videos"
+                },
+                "to": {
+                    "node": "v_wan22",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "wan22.table>v_wan22.videos",
+                "from": {
+                    "node": "wan22",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "v_wan22",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "wan22.summary>speed.data",
+                "from": {
+                    "node": "wan22",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "speed",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "wan22.summary>cmp.data",
+                "from": {
+                    "node": "wan22",
+                    "port": "summary"
+                },
+                "to": {
+                    "node": "cmp",
+                    "port": "data"
+                }
+            }
+        ],
+        "notes": [],
+        "dash": {
+            "items": []
+        }
+    }
+}

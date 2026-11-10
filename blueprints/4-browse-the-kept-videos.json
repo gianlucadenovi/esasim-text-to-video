@@ -1,0 +1,55 @@
+{
+    "esasim": {
+        "kind": "blueprint",
+        "flow_id": 30
+    },
+    "name": "4 · Browse the kept videos",
+    "description": "The dataset where you saved the videos you kept, in the review view: watch them whole, and change your mind.",
+    "published_version": 0,
+    "updated": "2026-11-10 22:57:03",
+    "graph": {
+        "nodes": [
+            {
+                "id": "kept",
+                "type": "dataset",
+                "x": 0,
+                "y": 120,
+                "params": {
+                    "dataset": "",
+                    "version": "latest",
+                    "pattern": "*.mp4, *.webm, *.jpg, *.csv",
+                    "limit": 200000
+                },
+                "title": "The kept videos (choose the dataset you saved them in)"
+            },
+            {
+                "id": "review",
+                "type": "video-review",
+                "x": 480,
+                "y": 60,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "The kept videos"
+            }
+        ],
+        "edges": [
+            {
+                "id": "kept.files>review.videos",
+                "from": {
+                    "node": "kept",
+                    "port": "files"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            }
+        ],
+        "notes": [],
+        "dash": {
+            "items": []
+        }
+    }
+}

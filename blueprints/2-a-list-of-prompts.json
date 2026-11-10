@@ -1,0 +1,133 @@
+{
+    "esasim": {
+        "kind": "blueprint",
+        "flow_id": 28
+    },
+    "name": "2 · A list of prompts",
+    "description": "Four different prompts, one per line, two variants each: eight videos, each streamed live and played whole as it is made.",
+    "published_version": 0,
+    "updated": "2026-11-10 22:56:45",
+    "graph": {
+        "nodes": [
+            {
+                "id": "gen",
+                "type": "text-to-video",
+                "x": 0,
+                "y": 120,
+                "params": {
+                    "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic\nWaves crash against black volcanic rocks at sunset, spray thrown high and glowing in the backlight, slow motion, cinematic\nA small six-wheeled rover drives across a red canyon on Mars, dust trailing behind its wheels, the camera tracking alongside, photorealistic\nTime-lapse of a city skyline at dusk as the windows light up one by one, clouds streaming overhead, wide shot",
+                    "count": 2,
+                    "seconds": 0,
+                    "model": "Wan 2.1 · 1.3B · 480p (default, GPU 8 GB)",
+                    "model_id": "",
+                    "negative": "",
+                    "seed": 1,
+                    "steps": 0,
+                    "guidance": 0,
+                    "width": 0,
+                    "height": 0,
+                    "quality": "small (opens in the dashboard)",
+                    "stream": "whole videos",
+                    "accelerator": "auto",
+                    "token": ""
+                },
+                "title": "Text to video: four prompts, two each"
+            },
+            {
+                "id": "review",
+                "type": "video-review",
+                "x": 520,
+                "y": 0,
+                "params": {
+                    "size": "medium",
+                    "preview": "under the pointer"
+                },
+                "title": "The videos: watch, keep, remove"
+            },
+            {
+                "id": "times",
+                "type": "chart",
+                "x": 520,
+                "y": 420,
+                "params": {
+                    "kind": "bars",
+                    "x": "n",
+                    "y": "made_in_s",
+                    "title": "Seconds to make each video"
+                },
+                "title": "Seconds per video"
+            },
+            {
+                "id": "table",
+                "type": "table-view",
+                "x": 520,
+                "y": 660,
+                "params": {
+                    "rows": 50
+                },
+                "title": "Prompts, seeds and times"
+            }
+        ],
+        "edges": [
+            {
+                "id": "gen.telemetry>review.videos",
+                "from": {
+                    "node": "gen",
+                    "port": "telemetry"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "gen.videos>review.videos",
+                "from": {
+                    "node": "gen",
+                    "port": "videos"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "gen.table>review.videos",
+                "from": {
+                    "node": "gen",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "review",
+                    "port": "videos"
+                }
+            },
+            {
+                "id": "gen.table>times.data",
+                "from": {
+                    "node": "gen",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "times",
+                    "port": "data"
+                }
+            },
+            {
+                "id": "gen.table>table.data",
+                "from": {
+                    "node": "gen",
+                    "port": "table"
+                },
+                "to": {
+                    "node": "table",
+                    "port": "data"
+                }
+            }
+        ],
+        "notes": [],
+        "dash": {
+            "items": []
+        }
+    }
+}
