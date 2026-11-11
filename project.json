@@ -12,7 +12,7 @@
         {
             "name": "1 · One prompt, several videos",
             "file": "blueprints/1-one-prompt-several-videos.json",
-            "published_version": 2,
+            "published_version": 3,
             "nodes": 4
         },
         {
