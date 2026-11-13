@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 4 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 5 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-13
@@ -104,7 +104,11 @@ def run(ctx):
         ctx.log("WARNING: CUDA is unavailable on this runner. Audio generation on CPU may be very slow; choose an NVIDIA GPU machine for faster runs.")
     dtype = torch.float16 if device == "cuda" else torch.float32
     token_env = p.get("token_env")
-    token = os.environ.get(token_env) if token_env else None
+    token = os.environ.get(token_env) if token_env else os.environ.get("HF_TOKEN")
+    if family == "stable" and not token:
+        announce("auth_required", "Stable Audio Open requires Hugging Face access. Accept the model terms and save your token in the generator block's Hugging Face access token secret setting.", 2)
+        hb_stop.set()
+        raise ValueError("Stable Audio Open 1.0 access required: visit https://huggingface.co/stabilityai/stable-audio-open-1.0, accept the license, then set the Hugging Face access token in the generator block's secret setting. The View cannot pass secrets.")
     if family == "stable":
         pipe_cls = StableAudioPipeline
         seconds = min(seconds, 47.)
@@ -132,7 +136,15 @@ def run(ctx):
         ctx.log("Loading compatible GPT2LMHeadModel for AudioLDM 2")
         language_model = GPT2LMHeadModel.from_pretrained(repo, subfolder="language_model", **lm_kwargs)
         kwargs["language_model"] = language_model
-    pipe = pipe_cls.from_pretrained(repo, **kwargs)
+    try:
+        pipe = pipe_cls.from_pretrained(repo, **kwargs)
+    except Exception as exc:
+        from huggingface_hub.errors import GatedRepoError, HfHubHTTPError
+        if isinstance(exc, (GatedRepoError, HfHubHTTPError)) and ("401" in str(exc) or "403" in str(exc) or "gated" in str(exc).lower()):
+            announce("auth_required", "Hugging Face denied access to %s. Check that you accepted its terms and configured an authorized token in the generator block." % repo, 2)
+            hb_stop.set()
+            raise ValueError("Hugging Face authorization failed for %s. Accept the model terms and configure the Hugging Face access token secret in the generator block. The token must belong to the account granted access." % repo) from exc
+        raise
     if device == "cuda":
         pipe = pipe.to("cuda")
     else:
