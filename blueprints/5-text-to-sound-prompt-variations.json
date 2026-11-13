@@ -1,19 +1,19 @@
 {
     "esasim": {
         "kind": "blueprint",
-        "flow_id": 54
+        "flow_id": 55
     },
-    "name": "5 · Text to sound — multiple variations",
-    "description": "Generate multiple WAV sound-effect variations from a prompt using Hugging Face audio models, then play each output in the Sound view and inspect waveforms and metadata.",
+    "name": "5 · Text to sound — prompt variations",
+    "description": "Choose an open audio diffusion model, enter a sound prompt and variation count, generate individual WAV files with seeded reproducibility, and review every sound in its own audio playback widget plus waveform and result table.",
     "published_version": 1,
-    "updated": "2026-11-13 02:51:35",
+    "updated": "2026-11-13 03:06:21",
     "graph": {
         "nodes": [
             {
-                "id": "generator",
+                "id": "generate",
                 "type": "ws-text-to-sound-effects",
                 "x": 0,
-                "y": 130,
+                "y": 100,
                 "params": {
                     "model": "AudioLDM 2",
                     "prompt": "A sudden powerful thunderclap directly overhead, followed by a long low rolling rumble that slowly fades into a quiet rainstorm. Photorealistic field recording, no music, no voices.",
@@ -25,43 +25,45 @@
                     "negative": "speech, music",
                     "token": ""
                 },
-                "title": "Prompt → sound variations"
+                "title": "Generate sound variations"
             },
             {
                 "id": "listen",
                 "type": "sound-view",
-                "x": 570,
+                "x": 560,
                 "y": 0,
                 "params": {
                     "autoplay": false,
                     "volume": 80
                 },
-                "title": "Listen to every variation"
+                "title": "Listen — each variation"
             },
             {
                 "id": "waveforms",
                 "type": "waveform-view",
-                "x": 570,
-                "y": 235,
-                "params": [],
-                "title": "Waveform inspection"
+                "x": 560,
+                "y": 220,
+                "params": {
+                    "lanes": "one lane each"
+                },
+                "title": "Waveforms & playback"
             },
             {
                 "id": "details",
                 "type": "table-view",
-                "x": 570,
-                "y": 470,
+                "x": 560,
+                "y": 440,
                 "params": {
                     "rows": 100
                 },
-                "title": "Seeds, prompt and generation time"
+                "title": "Model, seeds, duration & generation time"
             }
         ],
         "edges": [
             {
-                "id": "generator.sounds>listen.data",
+                "id": "generate.sounds>listen.data",
                 "from": {
-                    "node": "generator",
+                    "node": "generate",
                     "port": "sounds"
                 },
                 "to": {
@@ -70,9 +72,9 @@
                 }
             },
             {
-                "id": "generator.sounds>waveforms.data",
+                "id": "generate.sounds>waveforms.data",
                 "from": {
-                    "node": "generator",
+                    "node": "generate",
                     "port": "sounds"
                 },
                 "to": {
@@ -81,9 +83,9 @@
                 }
             },
             {
-                "id": "generator.table>details.data",
+                "id": "generate.table>details.data",
                 "from": {
-                    "node": "generator",
+                    "node": "generate",
                     "port": "table"
                 },
                 "to": {
