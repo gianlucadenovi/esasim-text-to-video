@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 2 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 3 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-13
@@ -23,6 +23,7 @@
 #   guidance    number    Guidance (0=automatic) = 0
 #   negative    text      Negative prompt = "speech, music"
 #   token       secret    Hugging Face access token = (environment variable ESASIM_SECRET_TOKEN)
+#   start_from_view bool      Generate requested by Studio (View only) = false
 # Runs on  Any machine, NVIDIA GPU. Return a dict to fill the "result" output.
 # Packages torch, numpy, soundfile, diffusers, transformers (installed by the worker with pip when missing)
 # EsaSim rewrites these lines from the block's definition each time it is saved: change the definition, not them.
@@ -35,6 +36,22 @@ import random
 import time
 
 def run(ctx):
+    # A normal Blueprint Run prepares the View, but never generates audio.
+    # Only the View's Generate button supplies the per-run trigger.
+    if not ctx.params.get("start_from_view", False):
+        ctx.log("Sound Studio ready. No inference was requested. Open the View and click Generate sounds.")
+        ctx.telemetry("studio_status", {"phase": "idle", "message": "Ready. Enter a prompt and click Generate sounds.", "percent": 0})
+        ctx.progress(100, "Ready — waiting for Generate sounds in the View")
+        return {"result": {"status": "idle", "generated": 0}}
+    def announce(phase, message, percent=None, **extra):
+        payload = {"phase": phase, "message": message}
+        if percent is not None:
+            payload["percent"] = int(percent)
+            ctx.progress(int(percent), message)
+        payload.update(extra)
+        ctx.log("[studio] " + message)
+        ctx.telemetry("studio_status", payload)
+    announce("preparing", "Preparing audio model and checking the execution device…", 1)
     import torch
     import numpy as np
     import soundfile as sf
@@ -83,7 +100,7 @@ def run(ctx):
         seconds = min(seconds, 10.)
     else:
         raise ValueError("Custom model family must be Stable Audio, AudioLDM 2, or AudioLDM")
-    ctx.progress(1, "Loading " + repo)
+    announce("loading", "Downloading / loading model: " + repo + " (first use may take a while)", 2, model=repo, device=device)
     kwargs = {"torch_dtype": dtype}
     if token:
         kwargs["token"] = token
@@ -106,13 +123,14 @@ def run(ctx):
         pipe = pipe.to("cpu")
     pipe.set_progress_bar_config(disable=True)
     loaded = round(time.monotonic() - start, 2)
+    announce("model_ready", "Model loaded in %.1f seconds on %s. Starting inference…" % (loaded, device), 5, device=device)
     sample_rate = int(getattr(pipe, "sample_rate", 0) or rate)
     rows = []
     ctx.log("Generating %d sound variations with %s on %s" % (count, repo, device))
     for i in range(count):
         seed = seed0 + i
         generator = torch.Generator(device=device).manual_seed(seed)
-        ctx.progress(5 + int(90 * i / count), "Generating variation %d/%d" % (i + 1, count))
+        announce("generating", "Generating variation %d of %d…" % (i + 1, count), 5 + int(90 * i / count), current=i+1, total=count, device=device)
         t0 = time.monotonic()
         args = {"prompt": prompt, "num_inference_steps": steps, "generator": generator, "guidance_scale": guidance}
         if negative:
@@ -135,7 +153,7 @@ def run(ctx):
         rows.append({"variation": i + 1, "file": name, "seed": seed, "prompt": prompt, "model": repo, "seconds": round(len(audio) / sample_rate, 3), "rate": sample_rate, "made_in_s": elapsed, "device": device})
         ctx.log("%s: %.1fs, seed %d" % (name, elapsed, seed))
         ctx.telemetry("progress", {"variation": i + 1, "file": name, "seed": seed, "made_in_s": elapsed})
-        ctx.progress(5 + int(90 * (i + 1) / count), "Created %d/%d WAV files" % (i + 1, count))
+        announce("generated", "Finished variation %d of %d — %s" % (i + 1, count, name), 5 + int(90 * (i + 1) / count), current=i+1, total=count, file=name, device=device)
         del result, audio
         if device == "cuda":
             torch.cuda.empty_cache()
@@ -145,5 +163,5 @@ def run(ctx):
         writer.writeheader()
         writer.writerows(rows)
     ctx.write_json("metadata", "generation.json", {"model": repo, "preset": preset, "prompt": prompt, "variations": count, "first_seed": seed0, "seconds_requested": seconds, "steps": steps, "guidance": guidance, "negative": negative, "device": device, "model_load_s": loaded, "outputs": rows, "license_note": "Review each model's Hugging Face license before commercial use."})
-    ctx.progress(100, "%d sound files ready" % count)
+    announce("done", "All %d sound variations are ready to play." % count, 100, current=count, total=count)
     return {"result": {"variations": count, "model": repo}}

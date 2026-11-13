@@ -8,7 +8,7 @@ An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Pyth
 
 | | |
 |---|---|
-| Block | `ws-text-to-sound-effects` · version 2 |
+| Block | `ws-text-to-sound-effects` · version 3 |
 | Workspace | Gianluca De Novi's workspace |
 | Author | Gianluca De Novi |
 | Runs on | Any machine, NVIDIA GPU |
@@ -36,6 +36,7 @@ An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Pyth
 | `guidance` Guidance (0=automatic) | number | `0` |  |
 | `negative` Negative prompt | text | `"speech, music"` |  |
 | `token` Hugging Face access token | secret | (secret) |  |
+| `start_from_view` Generate requested by Studio (View only) | bool | `false` | Leave off. The View automatically enables this only when Generate sounds is clicked; a normal Blueprint Run does not start inference. |
 
 ## Use it in EsaSim
 

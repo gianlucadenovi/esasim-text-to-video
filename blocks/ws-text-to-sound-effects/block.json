@@ -123,6 +123,13 @@
             "label": "Hugging Face access token",
             "type": "secret",
             "default": ""
+        },
+        {
+            "key": "start_from_view",
+            "label": "Generate requested by Studio (View only)",
+            "type": "bool",
+            "default": false,
+            "help": "Leave off. The View automatically enables this only when Generate sounds is clicked; a normal Blueprint Run does not start inference."
         }
     ],
     "hardware": [
@@ -137,6 +144,6 @@
         "transformers"
     ],
     "esasim": {
-        "version": 2
+        "version": 3
     }
 }
