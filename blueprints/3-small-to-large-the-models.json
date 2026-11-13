@@ -6,7 +6,7 @@
     "name": "3 · Small to large: the models",
     "description": "The same prompt and seeds on Wan 2.1 1.3B, LTX-Video 2B, Kandinsky 5.0 Video Lite 2B and Wan 2.2 TI2V 5B: their videos side by side, and the time each takes per video.",
     "published_version": 0,
-    "updated": "2026-11-10 22:57:01",
+    "updated": "2026-11-11 03:02:48",
     "graph": {
         "nodes": [
             {
@@ -18,7 +18,7 @@
                     "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
                     "count": 2,
                     "seconds": 0,
-                    "model": "Wan 2.1 · 1.3B · 480p (default, GPU 8 GB)",
+                    "model": "Wan 2.1 · 1.3B · 480p (small, GPU 8 GB)",
                     "model_id": "",
                     "negative": "",
                     "seed": 1,
@@ -53,7 +53,7 @@
                     "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
                     "count": 2,
                     "seconds": 0,
-                    "model": "LTX-Video 0.9.5 · 2B · 768x512 (fastest, GPU 8 GB)",
+                    "model": "Wan 2.2 TI2V · 5B · 720p (default, GPU 24 GB)",
                     "model_id": "",
                     "negative": "",
                     "seed": 1,
@@ -123,7 +123,7 @@
                     "prompt": "A red fox trots through fresh snow in a birch forest at dawn, its breath steaming in the cold air, soft golden light through the trees, the camera following low beside it, cinematic, photorealistic",
                     "count": 2,
                     "seconds": 0,
-                    "model": "Wan 2.2 TI2V · 5B · 720p (GPU 24 GB)",
+                    "model": "Wan 2.2 TI2V · 5B · 720p (default, GPU 24 GB)",
                     "model_id": "",
                     "negative": "",
                     "seed": 1,

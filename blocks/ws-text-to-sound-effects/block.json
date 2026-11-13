@@ -1,0 +1,135 @@
+{
+    "id": "ws-text-to-sound-effects",
+    "version": "1",
+    "name": "Text to sound effects",
+    "category": "AI",
+    "icon": "sparkles",
+    "side": "backend",
+    "customizable": true,
+    "summary": "Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.",
+    "help": "Select Stable Audio Open, AudioLDM 2, AudioLDM 2 Large or AudioLDM; describe the sound, set variations and duration. Each result is an individual WAV file, with a CSV and JSON manifest. Stable Audio Open can require accepting model terms and a Hugging Face token. AudioLDM family length is capped at 10 seconds. Model licenses may restrict commercial use.",
+    "inputs": [],
+    "outputs": [
+        {
+            "id": "sounds",
+            "label": "Generated WAV files",
+            "type": "files",
+            "formats": [
+                "wav"
+            ]
+        },
+        {
+            "id": "table",
+            "label": "Generation details",
+            "type": "table",
+            "formats": [
+                "csv"
+            ]
+        },
+        {
+            "id": "metadata",
+            "label": "Generation manifest",
+            "type": "files",
+            "formats": [
+                "json"
+            ]
+        }
+    ],
+    "params": [
+        {
+            "key": "model",
+            "label": "Hugging Face audio model",
+            "type": "select",
+            "default": "AudioLDM 2",
+            "options": [
+                "AudioLDM 2",
+                "AudioLDM 2 Large",
+                "Stable Audio Open 1.0",
+                "AudioLDM",
+                "Other Diffusers repository"
+            ]
+        },
+        {
+            "key": "model_id",
+            "label": "Custom model ID",
+            "type": "text",
+            "default": ""
+        },
+        {
+            "key": "custom_family",
+            "label": "Custom pipeline family",
+            "type": "select",
+            "default": "AudioLDM 2",
+            "options": [
+                "AudioLDM 2",
+                "Stable Audio",
+                "AudioLDM"
+            ]
+        },
+        {
+            "key": "prompt",
+            "label": "Sound description",
+            "type": "textarea",
+            "default": "A sudden powerful thunderclap directly overhead, followed by a long low rolling rumble that slowly fades into a quiet rainstorm. Photorealistic field recording, no music, no voices."
+        },
+        {
+            "key": "count",
+            "label": "Number of variations",
+            "type": "number",
+            "default": 4,
+            "min": 1,
+            "max": 100
+        },
+        {
+            "key": "seconds",
+            "label": "Duration per clip (seconds)",
+            "type": "number",
+            "default": 8,
+            "min": 1,
+            "max": 47
+        },
+        {
+            "key": "seed",
+            "label": "First random seed (0=random)",
+            "type": "number",
+            "default": 1,
+            "min": 0,
+            "max": 2147483647
+        },
+        {
+            "key": "steps",
+            "label": "Inference steps (0=automatic)",
+            "type": "number",
+            "default": 0,
+            "min": 0,
+            "max": 200
+        },
+        {
+            "key": "guidance",
+            "label": "Guidance (0=automatic)",
+            "type": "number",
+            "default": 0,
+            "min": 0,
+            "max": 20
+        },
+        {
+            "key": "negative",
+            "label": "Negative prompt",
+            "type": "text",
+            "default": "speech, music"
+        },
+        {
+            "key": "token",
+            "label": "Hugging Face access token",
+            "type": "secret",
+            "default": ""
+        }
+    ],
+    "hardware": [
+        "cpu",
+        "nvidia"
+    ],
+    "esasim": {
+        "version": 1
+    }
+}

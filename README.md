@@ -112,5 +112,10 @@ An [EsaSim](https://esacode.com/) project of the workspace Gianluca De Novi's wo
 - [2 · A list of prompts](blueprints/2-a-list-of-prompts.json) · 4 blocks
 - [3 · Small to large: the models](blueprints/3-small-to-large-the-models.json) · 10 blocks
 - [4 · Browse the kept videos](blueprints/4-browse-the-kept-videos.json) · 2 blocks
+- [5 · Text to sound — multiple variations](blueprints/5-text-to-sound-multiple-variations.json) · 4 blocks · version 1
+
+### Workspace blocks it uses
+
+- [Text to sound effects](blocks/ws-text-to-sound-effects) · version 1
 
 Keys pasted in blocks (secret settings) are not saved here. Datasets, results and the team stay in EsaSim.

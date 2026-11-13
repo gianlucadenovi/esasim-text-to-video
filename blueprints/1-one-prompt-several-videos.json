@@ -6,7 +6,7 @@
     "name": "1 · One prompt, several videos",
     "description": "Wan 2.1 (1.3B) turns one prompt into 4 videos of 5 seconds (seeds 1 to 4), each streamed live and played whole as it is made; keep or remove them, then save the kept ones.",
     "published_version": 4,
-    "updated": "2026-11-11 01:25:34",
+    "updated": "2026-11-11 01:41:05",
     "graph": {
         "nodes": [
             {

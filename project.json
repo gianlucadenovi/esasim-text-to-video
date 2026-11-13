@@ -32,7 +32,19 @@
             "file": "blueprints/4-browse-the-kept-videos.json",
             "published_version": 0,
             "nodes": 2
+        },
+        {
+            "name": "5 · Text to sound — multiple variations",
+            "file": "blueprints/5-text-to-sound-multiple-variations.json",
+            "published_version": 1,
+            "nodes": 4
         }
     ],
-    "blocks": []
+    "blocks": [
+        {
+            "id": "ws-text-to-sound-effects",
+            "version": 1,
+            "name": "Text to sound effects"
+        }
+    ]
 }
