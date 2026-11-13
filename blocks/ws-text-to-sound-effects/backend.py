@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 1 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 2 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-13
@@ -24,6 +24,7 @@
 #   negative    text      Negative prompt = "speech, music"
 #   token       secret    Hugging Face access token = (environment variable ESASIM_SECRET_TOKEN)
 # Runs on  Any machine, NVIDIA GPU. Return a dict to fill the "result" output.
+# Packages torch, numpy, soundfile, diffusers, transformers (installed by the worker with pip when missing)
 # EsaSim rewrites these lines from the block's definition each time it is saved: change the definition, not them.
 # ── end of EsaSim block header ────────────────────────────────────────
 
@@ -66,6 +67,8 @@ def run(ctx):
     negative = str(p.get("negative", "") or "").strip()
     guidance = float(p.get("guidance", 0) or (7. if family == "stable" else 2.5))
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    if device == "cpu":
+        ctx.log("WARNING: CUDA is unavailable on this runner. Audio generation on CPU may be very slow; choose an NVIDIA GPU machine for faster runs.")
     dtype = torch.float16 if device == "cuda" else torch.float32
     token_env = p.get("token_env")
     token = os.environ.get(token_env) if token_env else None
@@ -85,6 +88,17 @@ def run(ctx):
     if token:
         kwargs["token"] = token
     start = time.monotonic()
+    # AudioLDM 2's GPT-2 language model must expose the GenerationMixin API.
+    # Some cached model_index.json revisions instantiate GPT2Model instead of
+    # GPT2LMHeadModel, causing _update_model_kwargs_for_generation failures.
+    if family == "audioldm2":
+        from transformers import GPT2LMHeadModel
+        lm_kwargs = {"torch_dtype": dtype}
+        if token:
+            lm_kwargs["token"] = token
+        ctx.log("Loading compatible GPT2LMHeadModel for AudioLDM 2")
+        language_model = GPT2LMHeadModel.from_pretrained(repo, subfolder="language_model", **lm_kwargs)
+        kwargs["language_model"] = language_model
     pipe = pipe_cls.from_pretrained(repo, **kwargs)
     if device == "cuda":
         pipe = pipe.to("cuda")

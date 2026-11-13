@@ -3,7 +3,7 @@
     "version": "1",
     "name": "Text to sound effects",
     "category": "AI",
-    "icon": "sparkles",
+    "icon": "volume",
     "side": "backend",
     "customizable": true,
     "summary": "Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.",
@@ -129,7 +129,14 @@
         "cpu",
         "nvidia"
     ],
+    "packages": [
+        "torch",
+        "numpy",
+        "soundfile",
+        "diffusers",
+        "transformers"
+    ],
     "esasim": {
-        "version": 1
+        "version": 2
     }
 }

@@ -6,7 +6,7 @@
     "name": "5 · Text to sound — prompt variations",
     "description": "Choose an open audio diffusion model, enter a sound prompt and variation count, generate individual WAV files with seeded reproducibility, and review every sound in its own audio playback widget plus waveform and result table.",
     "published_version": 1,
-    "updated": "2026-11-13 03:06:21",
+    "updated": "2026-11-13 03:06:57",
     "graph": {
         "nodes": [
             {
