@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 3 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 4 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-13
@@ -34,6 +34,7 @@ import json
 import os
 import random
 import time
+import threading
 
 def run(ctx):
     # A normal Blueprint Run prepares the View, but never generates audio.
@@ -43,15 +44,30 @@ def run(ctx):
         ctx.telemetry("studio_status", {"phase": "idle", "message": "Ready. Enter a prompt and click Generate sounds.", "percent": 0})
         ctx.progress(100, "Ready — waiting for Generate sounds in the View")
         return {"result": {"status": "idle", "generated": 0}}
+    hb_state = {"stage":"preparing", "message":"Preparing model", "percent":1}
     def announce(phase, message, percent=None, **extra):
         payload = {"phase": phase, "message": message}
         if percent is not None:
             payload["percent"] = int(percent)
             ctx.progress(int(percent), message)
         payload.update(extra)
+        hb_state.update(stage=phase,message=message,percent=percent if percent is not None else hb_state["percent"])
         ctx.log("[studio] " + message)
         ctx.telemetry("studio_status", payload)
     announce("preparing", "Preparing audio model and checking the execution device…", 1)
+    # The native runner may regard a silent, long CPU inference as lost.
+    # Emit real liveness signals independently of the blocked inference thread.
+    hb_stop = threading.Event()
+    def heartbeat():
+        while not hb_stop.wait(20):
+            try:
+                state = dict(hb_state)
+                ctx.log("[heartbeat] Worker alive; " + state["message"])
+                ctx.progress(int(state["percent"]), state["message"] + " (worker alive)")
+                ctx.telemetry("studio_status", {"phase":state["stage"],"message":state["message"]+" — still processing","percent":state["percent"],"heartbeat":True})
+            except Exception as exc:
+                print("[heartbeat] Unable to emit progress: %s" % exc, flush=True)
+    threading.Thread(target=heartbeat,daemon=True).start()
     import torch
     import numpy as np
     import soundfile as sf
@@ -163,5 +179,6 @@ def run(ctx):
         writer.writeheader()
         writer.writerows(rows)
     ctx.write_json("metadata", "generation.json", {"model": repo, "preset": preset, "prompt": prompt, "variations": count, "first_seed": seed0, "seconds_requested": seconds, "steps": steps, "guidance": guidance, "negative": negative, "device": device, "model_load_s": loaded, "outputs": rows, "license_note": "Review each model's Hugging Face license before commercial use."})
+    hb_stop.set()
     announce("done", "All %d sound variations are ready to play." % count, 100, current=count, total=count)
     return {"result": {"variations": count, "model": repo}}
