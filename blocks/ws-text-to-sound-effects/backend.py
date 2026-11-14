@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 8 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 9 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-14
@@ -25,7 +25,7 @@
 #   negative    text      Negative prompt = "low quality, distorted, speech, music"
 #   token       secret    Hugging Face token = (environment variable ESASIM_SECRET_TOKEN)
 #   start_from_view bool      Generate requested by Studio (View only) = false
-# Runs on  Any machine, NVIDIA GPU. Return a dict to fill the "result" output.
+# Runs on  NVIDIA GPU. Return a dict to fill the "result" output.
 # Packages torch[cuda], diffusers==0.32.2, transformers==4.47.1, huggingface_hub>=0.26,<1.0, tokenizers>=0.21,<0.22, accelerate, safetensors, soundfile, numpy, scipy, torchsde, sentencepiece, protobuf, psutil (installed by the worker with pip when missing)
 # EsaSim rewrites these lines from the block's definition each time it is saved: change the definition, not them.
 # ── end of EsaSim block header ────────────────────────────────────────

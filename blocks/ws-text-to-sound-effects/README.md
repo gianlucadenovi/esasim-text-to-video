@@ -2,16 +2,16 @@
 
 Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 
-Pick a model, describe the sound and set the number of takes and their length. Each take is a WAV file, with a CSV and JSON manifest. AudioLDM and AudioLDM 2 make several candidates per take and keep the one that best matches the prompt (CLAP ranking): Candidates 0 = 3 on a GPU, 1 on a CPU. Stable Audio Open is gated: accept its licence on Hugging Face and save your token in Profile > Keys (or in this block). AudioLDM lengths are capped at 10 s, Stable Audio at 47 s. Runs best on an NVIDIA GPU; on a CPU expect minutes per take. Model licences may restrict commercial use.
+Pick a model, describe the sound and set the number of takes and their length. Each take is a WAV file, with a CSV and JSON manifest. AudioLDM and AudioLDM 2 make several candidates per take and keep the one that best matches the prompt (CLAP ranking): Candidates 0 = 3 on a GPU, 1 on a CPU. Stable Audio Open is gated: accept its licence on Hugging Face and save your token in Profile > Keys (or in this block). AudioLDM lengths are capped at 10 s, Stable Audio at 47 s. Runs on a machine with an NVIDIA GPU. Model licences may restrict commercial use.
 
 An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Python (`backend.py`, `def run(ctx)`).
 
 | | |
 |---|---|
-| Block | `ws-text-to-sound-effects` · version 8 |
+| Block | `ws-text-to-sound-effects` · version 9 |
 | Workspace | Gianluca De Novi's workspace |
 | Author | Gianluca De Novi |
-| Runs on | Any machine, NVIDIA GPU |
+| Runs on | NVIDIA GPU |
 
 ## Outputs
 
