@@ -43,7 +43,7 @@
     "blocks": [
         {
             "id": "ws-text-to-sound-effects",
-            "version": 7,
+            "version": 8,
             "name": "Text to sound effects"
         }
     ]

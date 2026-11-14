@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 7 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 8 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-14
@@ -81,8 +81,12 @@ def run(ctx):
         ctx.progress(100, "Ready — waiting for Generate sounds in the View")
         return {"status": "idle", "generated": 0}
 
-    # The model cache in the EsaSim data folder (the service account's home on Windows has no symlinks and little room).
-    os.environ.setdefault("HF_HOME", cache_dir("huggingface"))
+    # The model cache: the EsaSim data folder, unless that folder is synced by OneDrive (a service account cannot
+    # read files OneDrive has turned into online-only placeholders: the weights then look corrupted). Then the
+    # account's own Hugging Face cache.
+    data = cache_dir("huggingface")
+    if "onedrive" not in data.lower():
+        os.environ.setdefault("HF_HOME", data)
     os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
     os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
     os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
