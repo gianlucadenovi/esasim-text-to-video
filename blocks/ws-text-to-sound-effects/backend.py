@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 6 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 7 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-14
@@ -154,7 +154,7 @@ def generate_all(ctx, p, announce, hb):
         device, dtype = "cpu", torch.float32
         # Leave cores free: a CPU saturated by PyTorch starves the EsaSim worker, which then stops reporting
         # and the run is marked lost after 180 s.
-        threads = max(1, (os.cpu_count() or 4) - 2)
+        threads = max(1, min(8, (os.cpu_count() or 4) // 2))
         torch.set_num_threads(threads)
         try:
             import psutil
@@ -216,7 +216,14 @@ def generate_all(ctx, p, announce, hb):
             from transformers import GPT2LMHeadModel
             kwargs["language_model"] = GPT2LMHeadModel.from_pretrained(repo, subfolder="language_model", torch_dtype=dtype, token=token)
     try:
-        pipe = pipe_cls.from_pretrained(repo, **kwargs)
+        try:
+            pipe = pipe_cls.from_pretrained(repo, **kwargs)
+        except OSError as exc:
+            if "Unable to load weights" not in str(exc) and "corrupted" not in str(exc):
+                raise
+            # A weight file in the cache was cut short (an interrupted download or copy): fetch it again once.
+            ctx.log("A cached weight file of %s is damaged: downloading the model again." % repo)
+            pipe = pipe_cls.from_pretrained(repo, force_download=True, **kwargs)
     except Exception as exc:
         text = str(exc)
         if "401" in text or "403" in text or "gated" in text.lower() or type(exc).__name__ == "GatedRepoError":
