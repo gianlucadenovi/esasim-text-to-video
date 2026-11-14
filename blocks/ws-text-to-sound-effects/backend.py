@@ -1,6 +1,6 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 10 · machine block, Python: def run(ctx)
-# Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
+# Text to sound effects (ws-text-to-sound-effects) · version 11 · machine block, Python: def run(ctx)
+# Generate multiple seeded WAV sound effects (with MP3 copies) from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-14
 #
@@ -8,6 +8,7 @@
 #   (none)
 # Outputs  ctx.output("id", "name.ext") is the path to write; ctx.write_json / ctx.write_text
 #   sounds      Files (wav)               Generated WAV files
+#   mp3         Files (mp3)               MP3 copies
 #   table       Table (csv)               Generation details
 #   metadata    Files (json)              Generation manifest
 #   telemetry   Live telemetry            ctx.telemetry("channel", data) while it runs
@@ -26,12 +27,12 @@
 #   token       secret    Hugging Face token = (environment variable ESASIM_SECRET_TOKEN)
 #   start_from_view bool      Generate requested by Studio (View only) = false
 # Runs on  Any machine, NVIDIA GPU. Return a dict to fill the "result" output.
-# Packages torch[cuda], diffusers==0.32.2, transformers==4.47.1, huggingface_hub>=0.26,<1.0, tokenizers>=0.21,<0.22, accelerate, safetensors, soundfile, numpy, scipy, torchsde, sentencepiece, protobuf, psutil (installed by the worker with pip when missing)
+# Packages torch[cuda], diffusers==0.32.2, transformers==4.47.1, huggingface_hub>=0.26,<1.0, tokenizers>=0.21,<0.22, accelerate, safetensors, soundfile>=0.12, numpy, scipy, torchsde, sentencepiece, protobuf, psutil (installed by the worker with pip when missing)
 # EsaSim rewrites these lines from the block's definition each time it is saved: change the definition, not them.
 # ── end of EsaSim block header ────────────────────────────────────────
 
 """Text to sound effects: an open audio diffusion model from Hugging Face (AudioLDM, AudioLDM 2, Stable Audio Open),
-downloaded once into this machine's EsaSim cache, turns one prompt into several seeded WAV takes.
+downloaded once into this machine's EsaSim cache, turns one prompt into several seeded WAV takes (with MP3 copies).
 
 Why the package versions are pinned: with transformers 5.x the AudioLDM / AudioLDM 2 vocoder (SpeechT5HifiGan) is
 loaded from a config of another model type and the pipelines produce clipped, NaN-padded broadband noise instead of
@@ -259,6 +260,7 @@ def generate_all(ctx, p, announce, hb):
             ctx.progress(pct, hb["message"])
 
     rows = []
+    mp3_ok = [True]
     for i in range(count):
         state["i"] = i
         seed = seed0 + i
@@ -301,6 +303,17 @@ def generate_all(ctx, p, announce, hb):
             ctx.log("WARNING: %.1f%% of take %d was clipped at full scale: the model output is saturated (likely broken)." % (clipped * 100, i + 1))
         name = "sound_%02d_seed%d.wav" % (i + 1, seed)
         sf.write(ctx.output("sounds", name), audio, sample_rate, subtype="PCM_16")
+        if mp3_ok[0]:
+            mp3_path = ctx.output("mp3", name[:-4] + ".mp3")
+            try:
+                sf.write(mp3_path, audio, sample_rate, format="MP3")     # libsndfile >= 1.1 encodes MP3
+            except Exception as exc:
+                mp3_ok[0] = False
+                try:
+                    os.remove(mp3_path)
+                except OSError:
+                    pass
+                ctx.log("MP3 copies are not available on this machine (%s): WAV files only." % str(exc)[:160])
         elapsed = round(time.monotonic() - t0, 1)
         rows.append({"variation": i + 1, "file": name, "seed": seed, "prompt": prompt, "model": repo,
                      "seconds": round(len(audio) / sample_rate, 2), "rate": sample_rate, "steps": steps,

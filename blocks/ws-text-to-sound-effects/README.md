@@ -1,14 +1,14 @@
 # Text to sound effects
 
-Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
+Generate multiple seeded WAV sound effects (with MP3 copies) from a text prompt using Hugging Face diffusion audio models.
 
-Pick a model, describe the sound and set the number of takes and their length. Each take is a WAV file, with a CSV and JSON manifest. Runs on whatever machine is available: on an NVIDIA GPU in seconds per take; without one, on the CPU (8 threads, 50 steps, one candidate), about a minute per take for AudioLDM and several for AudioLDM 2 or Stable Audio. AudioLDM and AudioLDM 2 can make several candidates per take and keep the one that best matches the prompt (CLAP ranking): Candidates 0 = 3 on a GPU, 1 on a CPU. Stable Audio Open is gated: accept its licence on Hugging Face and save your token in Profile > Keys (or in this block). AudioLDM lengths are capped at 10 s, Stable Audio at 47 s. Model licences may restrict commercial use.
+Pick a model, describe the sound and set the number of takes and their length. Each take is a WAV file with an MP3 copy, plus a CSV and JSON manifest. Runs on whatever machine is available: on an NVIDIA GPU in seconds per take; without one, on the CPU (8 threads, 50 steps, one candidate), about a minute per take for AudioLDM and several for AudioLDM 2 or Stable Audio. AudioLDM and AudioLDM 2 can make several candidates per take and keep the one that best matches the prompt (CLAP ranking): Candidates 0 = 3 on a GPU, 1 on a CPU. Stable Audio Open is gated: accept its licence on Hugging Face and save your token in Profile > Keys (or in this block). AudioLDM lengths are capped at 10 s, Stable Audio at 47 s. Model licences may restrict commercial use.
 
 An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Python (`backend.py`, `def run(ctx)`).
 
 | | |
 |---|---|
-| Block | `ws-text-to-sound-effects` · version 10 |
+| Block | `ws-text-to-sound-effects` · version 11 |
 | Workspace | Gianluca De Novi's workspace |
 | Author | Gianluca De Novi |
 | Runs on | Any machine, NVIDIA GPU |
@@ -18,6 +18,7 @@ An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Pyth
 | Port | Type | Description |
 |---|---|---|
 | `sounds` Generated WAV files | Files (wav) |  |
+| `mp3` MP3 copies | Files (mp3) |  |
 | `table` Generation details | Table (csv) |  |
 | `metadata` Generation manifest | Files (json) |  |
 
