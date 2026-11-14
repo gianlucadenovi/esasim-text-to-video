@@ -2,13 +2,13 @@
 
 Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 
-Select Stable Audio Open, AudioLDM 2, AudioLDM 2 Large or AudioLDM; describe the sound, set variations and duration. Each result is an individual WAV file, with a CSV and JSON manifest. Stable Audio Open can require accepting model terms and a Hugging Face token. AudioLDM family length is capped at 10 seconds. Model licenses may restrict commercial use.
+Pick a model, describe the sound and set the number of takes and their length. Each take is a WAV file, with a CSV and JSON manifest. AudioLDM and AudioLDM 2 make several candidates per take and keep the one that best matches the prompt (CLAP ranking): Candidates 0 = 3 on a GPU, 1 on a CPU. Stable Audio Open is gated: accept its licence on Hugging Face and save your token in Profile > Keys (or in this block). AudioLDM lengths are capped at 10 s, Stable Audio at 47 s. Runs best on an NVIDIA GPU; on a CPU expect minutes per take. Model licences may restrict commercial use.
 
 An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Python (`backend.py`, `def run(ctx)`).
 
 | | |
 |---|---|
-| Block | `ws-text-to-sound-effects` · version 5 |
+| Block | `ws-text-to-sound-effects` · version 6 |
 | Workspace | Gianluca De Novi's workspace |
 | Author | Gianluca De Novi |
 | Runs on | Any machine, NVIDIA GPU |
@@ -32,11 +32,12 @@ An [EsaSim](https://esacode.com/) blueprint block: it runs on a machine, in Pyth
 | `count` Number of variations | number | `4` |  |
 | `seconds` Duration per clip (seconds) | number | `8` |  |
 | `seed` First random seed (0=random) | number | `1` |  |
-| `steps` Inference steps (0=automatic) | number | `0` |  |
-| `guidance` Guidance (0=automatic) | number | `0` |  |
-| `negative` Negative prompt | text | `"speech, music"` |  |
-| `token` Hugging Face access token | secret | (secret) |  |
-| `start_from_view` Generate requested by Studio (View only) | bool | `false` | Leave off. The View automatically enables this only when Generate sounds is clicked; a normal Blueprint Run does not start inference. |
+| `steps` Inference steps (0=automatic) | number | `0` | 0: AudioLDM 100, AudioLDM 2 150, Stable Audio 100 on a GPU; 50 on a CPU |
+| `guidance` Guidance (0=automatic) | number | `0` | 0: AudioLDM 2.5, AudioLDM 2 3.5, Stable Audio 7 |
+| `candidates` Candidates per take (0=automatic) | number | `0` | AudioLDM / AudioLDM 2 make this many and keep the one closest to the prompt (CLAP). 0: 3 on a GPU, 1 on a CPU |
+| `negative` Negative prompt | text | `"low quality, distorted, speech, music"` |  |
+| `token` Hugging Face token | secret | (secret) | Empty: the Hugging Face token in the profile of whoever runs the flow. Needed for gated models (Stable Audio Open) |
+| `start_from_view` Generate requested by Studio (View only) | bool | `false` | Leave off. The View enables this only when Generate sounds is clicked; a normal Blueprint Run does not start inference. |
 
 ## Use it in EsaSim
 
