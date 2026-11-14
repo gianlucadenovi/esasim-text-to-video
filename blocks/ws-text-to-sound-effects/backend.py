@@ -1,5 +1,5 @@
 # ── EsaSim block ──────────────────────────────────────────────────────
-# Text to sound effects (ws-text-to-sound-effects) · version 9 · machine block, Python: def run(ctx)
+# Text to sound effects (ws-text-to-sound-effects) · version 10 · machine block, Python: def run(ctx)
 # Generate multiple seeded WAV sound effects from a text prompt using Hugging Face diffusion audio models.
 # Workspace: Gianluca De Novi's workspace · Author: Gianluca De Novi
 # Saved: 2026-11-14
@@ -25,7 +25,7 @@
 #   negative    text      Negative prompt = "low quality, distorted, speech, music"
 #   token       secret    Hugging Face token = (environment variable ESASIM_SECRET_TOKEN)
 #   start_from_view bool      Generate requested by Studio (View only) = false
-# Runs on  NVIDIA GPU. Return a dict to fill the "result" output.
+# Runs on  Any machine, NVIDIA GPU. Return a dict to fill the "result" output.
 # Packages torch[cuda], diffusers==0.32.2, transformers==4.47.1, huggingface_hub>=0.26,<1.0, tokenizers>=0.21,<0.22, accelerate, safetensors, soundfile, numpy, scipy, torchsde, sentencepiece, protobuf, psutil (installed by the worker with pip when missing)
 # EsaSim rewrites these lines from the block's definition each time it is saved: change the definition, not them.
 # ── end of EsaSim block header ────────────────────────────────────────
@@ -150,7 +150,7 @@ def generate_all(ctx, p, announce, hb):
         raise ValueError("Unknown model %r." % preset)
     pipe_cls = {"audioldm": AudioLDMPipeline, "audioldm2": AudioLDM2Pipeline, "stable": StableAudioPipeline}[family]
 
-    # ---- where it runs
+    # ---- where it runs: the NVIDIA GPU when this machine has one, else the CPU
     if torch.cuda.is_available():
         device, dtype = "cuda", torch.float16
         where = torch.cuda.get_device_name(0)
@@ -167,8 +167,8 @@ def generate_all(ctx, p, announce, hb):
         except Exception:
             pass
         where = "CPU (%d threads)" % threads
-        ctx.log("WARNING: no CUDA GPU usable from PyTorch %s here: generating on the CPU, which is much slower. "
-                "Run on the machine with the NVIDIA GPU for normal speed." % torch.__version__)
+        ctx.log("No NVIDIA GPU on this machine: generating on the CPU (%d threads, lighter settings). "
+                "Expect about a minute per take for AudioLDM, several for AudioLDM 2 or Stable Audio." % threads)
     ctx.log("diffusers %s, transformers %s, torch %s, device %s" % (diffusers.__version__, transformers.__version__, torch.__version__, where))
 
     # ---- settings
