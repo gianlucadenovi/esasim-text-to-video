@@ -1,3 +1,7 @@
+<!-- esasim: cover -->
+![Text to video](assets/cover.jpg)
+<!-- /esasim: cover -->
+
 <div align="center">
 
 # Text to video

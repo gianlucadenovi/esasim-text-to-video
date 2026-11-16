@@ -7,6 +7,8 @@
     "name": "Text to video",
     "description": "Open text-to-video models from Hugging Face, small to large, turn prompts into videos of up to 10 seconds on your own NVIDIA GPU: several variants of each prompt, each streamed live and played whole as it is made; keep the good ones, remove the rest, and browse what you kept.",
     "type": "generative-ai",
+    "cover": "upload",
+    "cover_file": "assets/cover.jpg",
     "readme": "README.md",
     "blueprints": [
         {
